@@ -1,2 +1,19 @@
 ---
-# tasks file for memcached
+- name: install memcached
+  yum: name=memcached state=present
+  tags:
+    - memcached
+    - packages
+
+- name: configure memcached
+  template: src=sysconfig.j2 dest=/etc/sysconfig/memcached owner=root group=root mode=0644
+  tags:
+    - memcached
+    - configuration
+
+- name: ensure memcached is enabled and running
+  service: name=memcached enabled=yes state=started
+  tags:
+    - memcached
+    - configuration
+    - services
