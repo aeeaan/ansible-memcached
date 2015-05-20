@@ -14,6 +14,11 @@ Role Variables
 | memcached_cachesize			| 64				|						|
 | memcached_options			| ''				|						|
 
+Dependencies
+------------
+
+* correcthorse.common
+
 Example Playbook
 ----------------
 
