@@ -18,3 +18,12 @@
     - memcached
     - configuration
     - services
+
+- name: configure firewalld for memcached
+  firewalld: zone=public port="{{ memcached_port }}/tcp" permanent=true state=enabled
+  notify: reload firewall
+  when: memcached_open_port and ansible_distribution_major_version|int > 6
+  tags:
+    - memcached
+    - firewall
+    - configuration

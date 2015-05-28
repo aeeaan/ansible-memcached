@@ -9,6 +9,7 @@ Role Variables
 | Variable                              | Default                       | Notes                                         |
 | :---                                  | :---                          | :---                                          |
 | memcached_port			| 11211				| 	  	       		    		|
+| memcached_open_port			| false				|						|
 | memcached_user			| memcached			|						|
 | memcached_maxconn			| 1024				|						|
 | memcached_cachesize			| 64				|						|
