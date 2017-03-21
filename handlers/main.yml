@@ -1,6 +1,9 @@
 ---
 - name: restart memcached
   service: name=memcached state=restarted
+  when: not memcached_disable_default
 
 - name: restart memcached_extra
-  command: /bin/true
+  service: name="memcached-{{ item.item.key }}" state=restarted
+  with_items: "{{ memcached_extra_config.results }}"
+  when: item.changed
