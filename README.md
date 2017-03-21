@@ -14,6 +14,16 @@ Role Variables
 | memcached_maxconn			| 1024				|						|
 | memcached_cachesize			| 64				|						|
 | memcached_options			| ''				|						|
+| memcached_disable_default		| false				| disable default memcache instance, useful if you want all your instances named |
+
+    memcached_extra_instances:
+      instance2:
+        port: 11212 (required)
+        open_port: true (optional, default false, never make assumptions about firewall rules)
+        user: memcached (optional, default memcached_user)
+        maxconn: 1024 (optional, default memcached_maxconn)
+        cachesize: 64 (optional, default memcached_cachesize)
+        memcached_options: (optional, default memcached_options)
 
 Dependencies
 ------------

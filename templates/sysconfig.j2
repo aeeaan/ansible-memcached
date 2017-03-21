@@ -1,6 +1,14 @@
 # {{ ansible_managed }}
+{% if item is defined %}
+PORT="{{ item.value.port|default(memcached_port) }}"
+USER="{{ item.value.user|default(memcached_user) }}"
+MAXCONN="{{ item.value.maxconn|default(memcached_maxconn) }}"
+CACHESIZE="{{ item.value.cachesize|default(memcached_cachesize) }}"
+OPTIONS="{{ item.value.options|default(memcached_options) }}"
+{% else %}
 PORT="{{ memcached_port }}"
 USER="{{ memcached_user }}"
 MAXCONN="{{ memcached_maxconn }}"
 CACHESIZE="{{ memcached_cachesize }}"
 OPTIONS="{{ memcached_options }}"
+{% endif %}

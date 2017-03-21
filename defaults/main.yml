@@ -5,3 +5,5 @@ memcached_user: memcached
 memcached_maxconn: 1024
 memcached_cachesize: 64
 memcached_options: ''
+memcached_disable_default: false
+memcached_extra_instances: {}

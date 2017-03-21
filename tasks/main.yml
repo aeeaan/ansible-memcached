@@ -5,6 +5,14 @@
     - memcached
     - packages
 
+- name: install extra instances
+  template: src=memcached.service.j2 dest="/usr/lib/systemd/system/memcached-{{ item.key }}.service" owner=root group=root mode=0644
+  with_dict: "{{ memcached_extra_instances }}"
+  tags:
+    - memcached
+    - configuration
+    - services
+
 - name: configure memcached
   template: src=sysconfig.j2 dest=/etc/sysconfig/memcached owner=root group=root mode=0644
   notify: restart memcached
@@ -12,8 +20,33 @@
     - memcached
     - configuration
 
-- name: ensure memcached is enabled and running
+- name: configure extra instances
+  template: src=sysconfig.j2 dest="/etc/sysconfig/memcached-{{ item.key }}" owner=root group=root mode=0644
+  with_dict: "{{ memcached_extra_instances }}"
+  register: memcached_extra_config
+  notify: restart memcached_extra
+  tags:
+    - memcached
+
+- name: ensure default memcached is enabled and running
   service: name=memcached enabled=yes state=started
+  when: not memcached_disable_default
+  tags:
+    - memcached
+    - configuration
+    - services
+
+- name: ensure default memcached is disabled and stopped
+  service: name=memcached enabled=no state=stopped
+  when: memcached_disable_default
+  tags:
+    - memcached
+    - configuration
+    - services
+
+- name: ensure extra memcached are enabled and running
+  service: name="memcached-{{ item.key }}" enabled=yes state=started
+  with_dict: "{{ memcached_extra_instances }}"
   tags:
     - memcached
     - configuration
@@ -23,6 +56,16 @@
   firewalld: zone=public port="{{ memcached_port }}/tcp" permanent=true state=enabled
   notify: reload firewall
   when: memcached_open_port and ansible_distribution_major_version|int > 6
+  tags:
+    - memcached
+    - firewall
+    - configuration
+
+- name: configure firewalld for extra memcached services
+  firewalld: zone=public port="{{ memcached_port }}/tcp" permanent=true state=enabled
+  notify: reload firewall
+  with_dict: "{{ memcached_extra_instances }}"
+  when: item.value.open_port is defined and item.value.open_port and ansible_distribution_major_version|int > 6
   tags:
     - memcached
     - firewall
